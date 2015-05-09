@@ -1,26 +1,23 @@
 <?php
-/*
- * This is the server that will handle
- * Connections for the ProjectRealms server.
- * This was coded by Kyle Staschke and
- * is not to be used by anyone else!!
- */
-error_reporting(E_ALL);
-set_time_limit(0);
-ob_implicit_flush();
+require_once "websockets.php";
 
-$socket = socket_create(AF_INET, SOCK_STREAM, 0);
+class echoServer extends WebSocketServer {
+    protected function process($user,$message) {
+        $this->send($user,$message);
+    }
 
-$port = 25560;
+    protected function connected($user) {
 
-if(!($socket = socket_create(AF_INET, SOCK_STREAM, 0))) {
-    die("Could not open socket.");
+    }
+
+    protected function closed($user) {
+
+    }
 }
-echo "Socket created!\n";
 
-if(!(socket_connect($socket, "74.125.235.20", 80))) {
-    die("Could not send data!");
-}
-echo "Data send to ip";
+$server = new echoServer("localhost",25560);
 
+try {
+    $server->run();
+}catch(Exception $e) {}
 ?>
